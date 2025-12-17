@@ -40,6 +40,34 @@ app.post('/posts', async (req, res) => {
   }
 });
 
+
+app.delete('/posts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const consulta = "DELETE FROM posts WHERE id = $1";
+    const values = [id];
+    await pool.query(consulta, values);
+    res.send("Post eliminado con éxito");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error al eliminar el post");
+  }
+});
+
+app.put('/posts/like/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const consulta = "UPDATE posts SET likes = COALESCE(likes, 0) + 1 WHERE id = $1";
+    const values = [id];
+    await pool.query(consulta, values);
+    res.send("Like agregado con éxito");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error al agregar like");
+  }
+});
+
 app.listen(3000, () => {
   console.log('Servidor encendido en el puerto 3000');
 });
+
